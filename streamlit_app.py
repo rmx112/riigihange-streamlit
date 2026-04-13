@@ -12,6 +12,23 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text.lower()).strip()
 
 
+def clean_description(text: str) -> str:
+    if not text:
+        return ""
+
+    parts = [part.strip() for part in text.split(";") if part.strip()]
+
+    if len(parts) >= 3:
+        cleaned = "; ".join(parts[2:])
+    else:
+        cleaned = text.strip()
+
+    if len(cleaned) > 350:
+        cleaned = cleaned[:350].rstrip() + "..."
+
+    return cleaned
+
+
 @st.cache_data(ttl=300)
 def parse_rss(url: str):
     with urlopen(url) as response:
@@ -50,8 +67,8 @@ def filter_items(items, keyword: str):
     return unique
 
 
-st.set_page_config(page_title="Riigihangete registri otsing", layout="wide")
-st.title("Riigihangete registri märksõnaotsing")
+st.set_page_config(page_title="riigihangete registri otsing", layout="wide")
+st.title("riigihangete registri märksõnaotsing")
 st.write("Sisesta märksõna ja rakendus otsib selle järgi riigihangete RSS voost sobivad hanked.")
 
 keyword = st.text_input("sisesta märksõna", placeholder="näiteks: server")
@@ -71,5 +88,17 @@ if st.button("otsi"):
             for item in results:
                 st.subheader(item["title"])
                 st.write(f"kuupäev: {item['pub_date']}")
+
+                cleaned_description = clean_description(item["description"])
+                if cleaned_description:
+                    st.markdown(
+                        f"""
+                        <div style="font-size: 14px; color: #666666; margin-top: 6px; margin-bottom: 12px; line-height: 1.5;">
+                            {cleaned_description}
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
                 st.markdown(f"[ava hange]({item['link']})")
                 st.divider()
