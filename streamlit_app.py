@@ -68,7 +68,7 @@ def filter_items(items, keyword: str):
 
 
 st.set_page_config(page_title="riigihangete registri otsing", layout="wide")
-st.title("riigihangete registri märksõnaotsing")
+st.title("Riigihangete registri märksõnaotsing")
 st.write("Sisesta märksõna ja rakendus otsib selle järgi riigihangete RSS voost sobivad hanked.")
 
 keyword = st.text_input("sisesta märksõna", placeholder="näiteks: server")
