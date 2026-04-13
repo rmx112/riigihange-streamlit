@@ -95,7 +95,7 @@ def filter_items(items, keyword: str, cpv_prefix: str):
 
 
 st.set_page_config(page_title="riigihangete otsing", layout="wide")
-st.title("riigihangete märksõnaotsing")
+st.title("Riigihangete registri märksõnaotsing")
 st.write("Sisesta märksõna ja soovi korral CPV algus. Näiteks 72000000.")
 
 keyword = st.text_input("märksõna", placeholder="näiteks: litsents")
