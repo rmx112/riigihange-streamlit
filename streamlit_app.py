@@ -50,7 +50,7 @@ def filter_items(items, keyword: str):
     return unique
 
 
-st.set_page_config(page_title="riigihangete otsing", layout="wide")
+st.set_page_config(page_title="Riigihangete registri otsing", layout="wide")
 st.title("riigihangete märksõnaotsing")
 st.write("Sisesta märksõna ja rakendus otsib selle järgi riigihangete RSS voost sobivad hanked.")
 
