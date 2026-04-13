@@ -32,11 +32,15 @@ def parse_rss(url: str):
         description = item.findtext("description", default="").strip()
         pub_date = item.findtext("pubDate", default="").strip()
 
+        # kogu item xml tekstina
+        item_xml = ET.tostring(item, encoding="unicode")
+
         items.append({
             "title": title,
             "link": link,
             "description": description,
             "pub_date": pub_date,
+            "item_xml": item_xml,
         })
 
     return items
@@ -46,9 +50,8 @@ def extract_possible_cpv_codes(text: str):
     if not text:
         return []
 
-    # otsib kujusid nagu 72000000-5 või ka lihtsalt 72000000
-    matches = re.findall(r"\b\d{8}(?:-\d)?\b", text)
-    return matches
+    matches = re.findall(r"\b\d{8}-\d\b", text)
+    return list(dict.fromkeys(matches))
 
 
 def filter_items(items, keyword: str, cpv_prefix: str):
@@ -72,6 +75,25 @@ def filter_items(items, keyword: str, cpv_prefix: str):
             f"{item['title']} {item['description']}"
         )
 
+def filter_items(items, keyword: str, cpv_prefix: str):
+    keyword_norm = normalize_text(keyword)
+    cpv_prefix_norm = normalize_cpv(cpv_prefix)
+
+    results = []
+
+    for item in items:
+        title_text = normalize_text(item["title"])
+        description_text = normalize_text(item["description"])
+        full_text = f"{title_text} {description_text}"
+
+        keyword_ok = True
+        cpv_ok = True
+
+        if keyword_norm:
+            keyword_ok = keyword_norm in full_text
+
+        found_cpvs = extract_possible_cpv_codes(item.get("item_xml", ""))
+
         if cpv_prefix_norm:
             cpv_ok = any(
                 normalize_cpv(code).startswith(cpv_prefix_norm)
@@ -85,6 +107,13 @@ def filter_items(items, keyword: str, cpv_prefix: str):
 
     seen = set()
     unique_items = []
+
+    for item in results:
+        if item["link"] not in seen:
+            seen.add(item["link"])
+            unique_items.append(item)
+
+    return unique_items
 
     for item in results:
         if item["link"] not in seen:
