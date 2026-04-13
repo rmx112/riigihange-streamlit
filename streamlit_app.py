@@ -12,7 +12,7 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text.lower()).strip()
 
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def parse_rss(url: str):
     with urlopen(url) as response:
         xml_data = response.read()
