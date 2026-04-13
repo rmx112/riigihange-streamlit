@@ -71,7 +71,7 @@ st.set_page_config(page_title="riigihangete registri otsing", layout="wide")
 st.title("Riigihangete registri märksõnaotsing")
 st.write("Sisesta märksõna ja rakendus otsib selle järgi riigihangete RSS voost sobivad hanked.")
 
-keyword = st.text_input("sisesta märksõna", placeholder="näiteks: server")
+keyword = st.text_input("sisesta märksõna", placeholder="näiteks: Server, Andmeteenused, Arvutisüsteemid, Varundusteenus")
 
 if st.button("otsi"):
     if not keyword.strip():
